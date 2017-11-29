@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+     </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous">
+    </script>
+</head>
+<body>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var socket = io.connect('http://127.0.0.1:8081');
+            $('#vote1').on('click', function(){
+                console.info('vote1');
+                socket.emit('vote', 1);
+            });
+            $('#vote2').on('click', function(){
+                console.info('vote2');
+                socket.emit('vote', 2);
+            });
+
+            socket.on('vote_results', function(results){
+                console.info('start vote_results');
+                var total_votes = results.results1 + results.results2;
+                var one_pct = Math.round(results.results1 / total_votes * 100);
+                var two_pct = 100 - one_pct;
+                $('#results1').css('width', one_pct + '%');
+                $('#results2').css('width', two_pct + '%');
+                console.info('vote_results');
+            });
+        });
+    </script>
+    <button id="vote1">Vote 1</button>
+    <button id="vote2">Vote 2</button>
+
+    <div class="progress">
+        <div id="results1" class="progress-bar progress-bar-sucess" style="width: 50%"></div>
+        <div id="results2 " class="progress-bar progress-bar-warning progress-bar-striped" style="width: 50%"></div>
+    </div>
+</body>
+</html>
